@@ -1,5 +1,6 @@
- package com.example.miguelcaringal.myapplication;
+package com.example.miguelcaringal.myapplication;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.app.Activity;
@@ -10,6 +11,7 @@ import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             float R[] = new float[9];
             float I[] = new float[9];
             boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
+
             if (success) {
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
@@ -75,15 +78,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 if (deltaTime > deltaTimeThreshold) {
                     prevTime = nowTime;
-                    //Log.d("WL/MainActivity", "azimut="+ azimut);
-                    Log.d(TAG, "pitch="+ pitch);
-                    //Log.d("WL/MainActivity", "roll="+ roll);
-                    /*
-
-
-                     */
+                    // Log.d("WL/MainActivity", "azimut="+ azimut);
+                    // Log.d(TAG, "pitch="+ pitch);
+                    // Log.d("WL/MainActivity", "roll="+ roll);
                 }
-
 
                 if (pitch > 0) {
                     topPadding = Math.max(topPadding-5, 0);
@@ -100,5 +98,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             }
         }
+    }
+
+    public void startSensorActivity(View view) {
+        Intent intent = new Intent(this, SensorActivity.class);
+        startActivity(intent);
     }
 }
