@@ -36,14 +36,14 @@
 
 
     <Button
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:onClick="begin"
         android:backgroundTint="@color/colorPrimaryDark"
-        android:text="Begin"
-        style="@style/Widget.AppCompat.Button.Colored"/>
+        android:onClick="begin"
+        android:text="Begin" />
 
 
 </LinearLayout>
