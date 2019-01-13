@@ -20,6 +20,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     Sensor accelerometer;
     Sensor magnetometer;
     long prevTime;
+    float[] mGravity;
+    float[] mGeomagnetic;
     private static final String TAG = "WL/MainActivity";
 
     @Override
@@ -49,10 +51,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {  }
 
-    float[] mGravity;
-    float[] mGeomagnetic;
-    int topPadding = 0;
-    int leftPadding = 0;
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -82,20 +80,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     // Log.d(TAG, "pitch="+ pitch);
                     // Log.d("WL/MainActivity", "roll="+ roll);
                 }
-
-                if (pitch > 0) {
-                    topPadding = Math.max(topPadding-5, 0);
-                } else if (pitch < 0) {
-                    topPadding = Math.min(topPadding+5, 500);
-                }
-
-                if (roll > 0) {
-                    leftPadding = Math.min(leftPadding+5, 500);
-
-                } else if (roll < 0) {
-                    leftPadding = Math.max(leftPadding-5, 0);
-                }
-
             }
         }
     }

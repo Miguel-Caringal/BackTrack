@@ -1,36 +1,40 @@
 package com.example.miguelcaringal.myapplication;
 
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.ToneGenerator;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 public class SensorActivity extends AppCompatActivity implements SensorEventListener {
 
     private SensorManager mSensorManager;
     Sensor mAccelerometer;
     Sensor mMagnetometer;
-    long mCreationTime;
-    private static final String INITIALIZATION_STATE = "INITIALIZATION_STATE";
-    private static final String EXERCISE_STATE = "EXERCISE_STATE";
-    private static final String TAG = "WL/MainActivity";
-    private static final long INITIALIZATION_TIME = 3000;
-    private static final float SQUAT_DEG_DIFF = 70;
-    private static final float SQUAT_START_DEG_THRESHOLD = 20;
     float[] mGravity;
     float[] mGeomagnetic;
+    long mCreationTime;
     float mInitDegsSum;
     float mNumInitDegs;
     String mState;
+    float mInitDegAvg;
+    long mLastStateChangeTime;
+    ArrayList<Long> mStateChangeTimeIntervals;
+
+    private static final String INITIALIZATION_STATE = "INITIALIZATION_STATE";
+    private static final String UP_STATE = "UP_STATE";
+    private static final String DOWN_STATE = "DOWN_STATE";
+    private static final String TAG = "WL/MainActivity";
+    private static final long WAIT_TIME = 3000;
+    private static final long INITIALIZATION_TIME = 6000;
+    private static final float DOWN_STATE_DEG = 30 ;
+    private static final float DEG_ERROR = 10;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         mInitDegsSum = 0;
         mNumInitDegs = 0;
         mState = INITIALIZATION_STATE;
+        mStateChangeTimeIntervals = new ArrayList<>();
     }
 
     @Override
@@ -69,9 +74,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     @Override
     public void onSensorChanged(SensorEvent event) {
         long nowTime = System.currentTimeMillis();
-        long deltaTime = nowTime-mCreationTime;
-        long deltaTimeThreshold = 500;
-        
+
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
             mGravity = event.values;
         if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
@@ -87,9 +90,9 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
                 float azimut = (float) Math.toDegrees(orientation[0]);
                 float pitch = (float) Math.toDegrees(orientation[1]);
                 float roll = (float) Math.toDegrees(orientation[2]);// orientation contains: azimut, pitch and roll
+                long deltaTime = nowTime-mCreationTime;
 
-                updateInitDegs(pitch, deltaTime);
-
+                updateInitDegs(pitch, nowTime);
             }
         }
     }
@@ -97,20 +100,39 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     /**
      *
      * @param pitch
-     * @param deltaTime
+     * @param nowTime
      */
-    private void updateInitDegs (float pitch, long deltaTime) {
+    private void updateInitDegs (float pitch, long nowTime) {
 
-        if (deltaTime <= INITIALIZATION_TIME) {
+        float pitchDelta = Math.abs(pitch - mInitDegAvg);
+        long creationDeltaTime = nowTime - mCreationTime;
+
+        if (creationDeltaTime > WAIT_TIME && creationDeltaTime <= INITIALIZATION_TIME) {
             // Increment degs
             mInitDegsSum += pitch;
             mNumInitDegs++;
         } else if (mState.equals(INITIALIZATION_STATE)){
+            Log.d(TAG, "INITIALIZATION_STATE");
+
             // Calculate avgs
-            float initDegAvg = mInitDegsSum / mNumInitDegs;
-            Log.d(TAG, "initDegAvg=" + initDegAvg);
+            mInitDegAvg = mInitDegsSum / mNumInitDegs;
             playTone();
-            mState = EXERCISE_STATE;
+            mState = UP_STATE;
+            mLastStateChangeTime = nowTime;
+        } else if (mState.equals(UP_STATE) && pitchDelta > DOWN_STATE_DEG) {
+            Log.d(TAG, "CHANGE TO DOWN STATE");
+            long stateChangeDeltaTime = nowTime - mLastStateChangeTime;
+            mStateChangeTimeIntervals.add(stateChangeDeltaTime);
+            playTone();
+            mState = DOWN_STATE;
+            mLastStateChangeTime = nowTime;
+        } else if (mState.equals(DOWN_STATE) && pitchDelta < DEG_ERROR) {
+            Log.d(TAG, "CHANGE TO UP STATE");
+            playTone();
+            long stateChangeDeltaTime = nowTime - mLastStateChangeTime;
+            mStateChangeTimeIntervals.add(stateChangeDeltaTime);
+            mState = UP_STATE;
+            mLastStateChangeTime = nowTime;
         }
     }
 
