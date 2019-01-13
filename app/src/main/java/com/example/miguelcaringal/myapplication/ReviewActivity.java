@@ -15,8 +15,11 @@ public class ReviewActivity extends AppCompatActivity {
 
     float[] pitchDataArr;
     int[] timeDataArr;
+    int downMovtAvgTime, upMovtAvgTime;
     private static final String PITCH_DATA_KEY = "PITCH_DATA_KEY";
     private static final String TIME_DATA_KEY = "TIME_DATA_KEY";
+    private static final String AVG_DOWN_MVNT_TIME_KEY = "AVG_DOWN_MVNT_TIME_KEY";
+    private static final String AVG_UP_MVNT_TIME_KEY = "AVG_UP_MVNT_TIME_KEY";
     private static final String TAG = "WL/ReviewActivity";
 
 
@@ -29,20 +32,31 @@ public class ReviewActivity extends AppCompatActivity {
         if (intentBundle != null) {
             pitchDataArr = intentBundle.getFloatArray(PITCH_DATA_KEY);
             timeDataArr = intentBundle.getIntArray(TIME_DATA_KEY);
+            downMovtAvgTime = intentBundle.getInt(AVG_DOWN_MVNT_TIME_KEY);
+            upMovtAvgTime = intentBundle.getInt(AVG_UP_MVNT_TIME_KEY);
 
             Log.d(TAG, Arrays.toString(pitchDataArr));
             Log.d(TAG, Arrays.toString(timeDataArr));
         }
+
+        ArrayList<DataPoint> dataPointArrayList = new ArrayList<>();
+
+        for (int i = 0; i < timeDataArr.length; i++) {
+            if (i < pitchDataArr.length) {
+                dataPointArrayList.add(new DataPoint(timeDataArr[i]/1000, pitchDataArr[i]));
+            }
+        }
+
+        DataPoint[] dataPoints = new DataPoint[dataPointArrayList.size()];
+
+        for (int i=0; i < dataPoints.length; i++) {
+            dataPoints[i] = dataPointArrayList.get(i);
+        }
+
         GraphView graph = findViewById(R.id.graph);
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(0, 1),
-                new DataPoint(1, 5),
-                new DataPoint(2, 3),
-                new DataPoint(3, 2),
-                new DataPoint(4, 6)
-        });
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
         graph.addSeries(series);
-        graph.setTitle("foo");
+        graph.setTitle("Squat Angle Delta over Time");
     }
 
 }

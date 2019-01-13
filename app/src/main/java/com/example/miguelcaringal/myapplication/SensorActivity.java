@@ -31,7 +31,9 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     float mInitDegAvg;
     long mLastStateChangeTime;
     ArrayList<Long> mStateChangeTimeIntervals;
-    MediaPlayer mediaPlayer;
+    MediaPlayer mediaPlayerDing;
+    MediaPlayer mediaPlayerBuzzer;
+
     long timeOfLastMovt;
     float lastBigMovtDeg;
     long downMovtAvgTime, upMovtAvgTime;
@@ -43,15 +45,27 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     private static final String UP_STATE = "UP_STATE";
     private static final String DOWN_STATE = "DOWN_STATE";
     private static final String END_STATE = "END_STATE";
+    private static final String DOWN_ATTEMPT_STATE = "DOWN_ATTEMPT_STATE";
+    private static final String UP_ATTEMPT_STATE = "UP_ATTEMPT_STATE";
+    private static final String OVERSHOOT_STATE = "OVERSHOOT_STATE";
+
     private static final String TAG = "WL/MainActivity";
     private static final long WAIT_TIME = 3000;
     private static final long INITIALIZATION_TIME = 5000;
-    private static final float DOWN_STATE_DEG = 30;
     private static final long LOG_INTERVAL = 500;
-    private static final float DEG_ERROR = 5;
     private static final long END_TIME_DETECT_THRESHOLD = 5000;
+
+    private static final float DEG_ERROR = 5;
+    private static final float DOWN_STATE_DEG = 50;
+    private static final float OVERSHOOT_DEG = 70;
+
+
+    //private static final float
+
     private static final String PITCH_DATA_KEY = "PITCH_DATA_KEY";
     private static final String TIME_DATA_KEY = "TIME_DATA_KEY";
+    private static final String AVG_DOWN_MVNT_TIME_KEY = "AVG_DOWN_MVNT_TIME_KEY";
+    private static final String AVG_UP_MVNT_TIME_KEY = "AVG_UP_MVNT_TIME_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +98,13 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
+        if (mediaPlayerBuzzer != null) {
+            mediaPlayerBuzzer.stop();
+            mediaPlayerBuzzer.release();
+        }
+        if (mediaPlayerDing != null) {
+            mediaPlayerDing.stop();
+            mediaPlayerDing.release();
         }
 
     }
@@ -141,8 +159,12 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
         if (nowTime - lastLogTime >= LOG_INTERVAL) {
             lastLogTime = nowTime;
-            timeData.add((int) creationDeltaTime);
-            pitchData.add(pitchDelta);
+
+            if (!mState.equals(INITIALIZATION_STATE)) {
+                timeData.add((int) (creationDeltaTime-INITIALIZATION_TIME-WAIT_TIME) );
+                pitchData.add(pitchDelta);
+            }
+
 
             if (mState.equals(END_STATE)) {
                 Log.d(TAG, "END_STATE");
@@ -162,6 +184,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             Intent intent = new Intent(this, ReviewActivity.class);
             intent.putExtra(PITCH_DATA_KEY, convertFloats(pitchData));
             intent.putExtra(TIME_DATA_KEY, convertIntegers(timeData));
+            intent.putExtra(AVG_DOWN_MVNT_TIME_KEY, downMovtAvgTime);
+            intent.putExtra(AVG_UP_MVNT_TIME_KEY, upMovtAvgTime);
             startActivity(intent);
             //Log.d(TAG, END_STATE);
             //Log.d(TAG, "downMovtAvgTime=" + downMovtAvgTime);
@@ -173,6 +197,19 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         if (creationDeltaTime <= WAIT_TIME) {
             return;
         }
+/*
+        if (pitchDelta > OVERSHOOT_DEG && !mState.equals(OVERSHOOT_STATE)) {
+            Log.d(TAG, "Overshoot");
+
+            long stateChangeDeltaTime = nowTime - mLastStateChangeTime;
+
+            // Down movt times is evens
+            mStateChangeTimeIntervals.add(stateChangeDeltaTime);
+            playBuzzer();
+            mState = DOWN_STATE;
+            mLastStateChangeTime = nowTime;
+            return;
+        }*/
 
         if (creationDeltaTime <= INITIALIZATION_TIME + WAIT_TIME) {
             // Increment degs
@@ -183,7 +220,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
             // Calculate avgs
             mInitDegAvg = mInitDegsSum / mNumInitDegs;
-            playTone();
+            playDing();
             mState = UP_STATE;
             mLastStateChangeTime = nowTime;
             lastBigMovtDeg = mInitDegAvg;
@@ -199,14 +236,14 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
             // Down movt times is evens
             mStateChangeTimeIntervals.add(stateChangeDeltaTime);
-            playTone();
+            playDing();
             mState = DOWN_STATE;
             mLastStateChangeTime = nowTime;
 
         } else if (mState.equals(DOWN_STATE) && pitchDelta < DEG_ERROR) {
             Log.d(TAG, "CHANGE TO UP STATE");
             Log.d(TAG, "pitch=" + pitch + " pitchDelta=" + pitchDelta);
-            playTone();
+            playDing();
             long stateChangeDeltaTime = nowTime - mLastStateChangeTime;
 
             // Up movt times are odds
@@ -281,9 +318,15 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         }
     }
 
-    private void playTone() {
-        Log.d(TAG, "playTone");
-        mediaPlayer = MediaPlayer.create(this, R.raw.ding);
-        mediaPlayer.start();
+    private void playDing() {
+        Log.d(TAG, "playDing");
+        mediaPlayerDing = MediaPlayer.create(this, R.raw.ding);
+        mediaPlayerDing.start();
+    }
+
+    private void playBuzzer() {
+        Log.d(TAG, "playBuzzer");
+        mediaPlayerBuzzer = MediaPlayer.create(this, R.raw.buzzer);
+        mediaPlayerBuzzer.start();
     }
 }
