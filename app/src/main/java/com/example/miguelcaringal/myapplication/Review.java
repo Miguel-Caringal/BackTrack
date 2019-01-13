@@ -22,6 +22,7 @@ public class Review extends AppCompatActivity {
                 new DataPoint(4, 6)
         });
         graph.addSeries(series);
+        graph.setTitle("foo");
     }
 
 }
