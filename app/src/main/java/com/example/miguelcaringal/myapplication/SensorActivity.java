@@ -150,7 +150,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
             downMovtAvgTime = getEvenIndexAvg(mStateChangeTimeIntervals);
             upMovtAvgTime = getOddIndexAvg(mStateChangeTimeIntervals);
-            Intent intent = new Intent(this, SensorActivity.class);
+            Intent intent = new Intent(this, Review.class);
             startActivity(intent);
             //Log.d(TAG, END_STATE);
             //Log.d(TAG, "downMovtAvgTime=" + downMovtAvgTime);
