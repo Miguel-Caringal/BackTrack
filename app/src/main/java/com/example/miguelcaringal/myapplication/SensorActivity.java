@@ -9,6 +9,8 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 
 import com.jjoe64.graphview.GraphView;
@@ -61,7 +63,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
 
     //private static final float
-
+    public String exerciseType = "";
     private static final String PITCH_DATA_KEY = "PITCH_DATA_KEY";
     private static final String TIME_DATA_KEY = "TIME_DATA_KEY";
     private static final String AVG_DOWN_MVNT_TIME_KEY = "AVG_DOWN_MVNT_TIME_KEY";
@@ -84,6 +86,21 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         mState = INITIALIZATION_STATE;
         mStateChangeTimeIntervals = new ArrayList<>();
         lastLogTime = mCreationTime;
+
+        Bundle bundle = getIntent().getExtras();
+
+        if(bundle.getString("exercise")!= null)
+        {
+            //TODO here get the string stored in the string variable and do
+
+            exerciseType = bundle.getString("exercise");
+
+            TextView display = findViewById(R.id.display);
+
+            display.setText(exerciseType.toUpperCase() + "!");
+
+        }
+
         timeData = new ArrayList<>();
         pitchData = new ArrayList<>();
     }
@@ -181,11 +198,15 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
             downMovtAvgTime = getEvenIndexAvg(mStateChangeTimeIntervals);
             upMovtAvgTime = getOddIndexAvg(mStateChangeTimeIntervals);
+
             Intent intent = new Intent(this, ReviewActivity.class);
+            intent.putExtra("exercise", exerciseType);
+
             intent.putExtra(PITCH_DATA_KEY, convertFloats(pitchData));
             intent.putExtra(TIME_DATA_KEY, convertIntegers(timeData));
             intent.putExtra(AVG_DOWN_MVNT_TIME_KEY, downMovtAvgTime);
             intent.putExtra(AVG_UP_MVNT_TIME_KEY, upMovtAvgTime);
+
             startActivity(intent);
             //Log.d(TAG, END_STATE);
             //Log.d(TAG, "downMovtAvgTime=" + downMovtAvgTime);

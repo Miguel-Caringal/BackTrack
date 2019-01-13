@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float[] mGeomagnetic;
     private static final String TAG = "WL/MainActivity";
 
-    public String excerciseType = "";
+    public String exerciseType = "";
 
 
     @Override
@@ -98,18 +98,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
         if (squatBtn.isChecked()) {
-            excerciseType = "squat";
+            exerciseType = "squat";
         } else if (deadliftBtn.isChecked()) {
-            excerciseType = "deadlift";
+            exerciseType = "deadlift";
         } else {
-            excerciseType = "lunge";
+            exerciseType = "lunge";
         }
 
 
 
         Intent intent = new Intent(this, SensorActivity.class);
 
-        intent.putExtra("excercise", excerciseType);
+        intent.putExtra("exercise", exerciseType);
 
 
 
