@@ -9,6 +9,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
 import java.util.ArrayList;
 
 public class SensorActivity extends AppCompatActivity implements SensorEventListener {
@@ -35,7 +39,6 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     private static final float DOWN_STATE_DEG = 30 ;
     private static final float DEG_ERROR = 10;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +55,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         mNumInitDegs = 0;
         mState = INITIALIZATION_STATE;
         mStateChangeTimeIntervals = new ArrayList<>();
+
+
     }
 
     @Override
