@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#FFFFFF">
 
 
 
@@ -20,7 +21,8 @@
         android:textStyle="bold"
         android:textSize="60dp"
         android:textAlignment="center"
-        android:background="#3F51B5"/>
+        android:background="#3F51B5"
+        android:layout_marginBottom=""/>
 
     <TextView
         android:layout_marginTop="20dp"
@@ -28,51 +30,119 @@
         android:layout_height="wrap_content"
         android:text="Select your excercise:"
         android:fontFamily="sans-serif-condensed"
-        android:textColor="#3F51B5"
+        android:textColor="#000000"
         android:textStyle="bold"
         android:textSize="25dp"
-        android:paddingLeft="20dp"/>
+        android:paddingLeft="20dp"
+        android:layout_marginBottom="2dp"/>
 
-    <RadioGroup
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <RadioButton
-            android:id="@+id/squat_radio_button"
+        android:orientation="horizontal">
+
+
+        <RadioGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SQUAT"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="bold"/>
-        <RadioButton
-            android:id="@+id/deadlift_radio_button"
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical"
+            android:layout_marginRight="40dp">
+
+            <RadioButton
+                android:id="@+id/squat_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Squat"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/deadlift_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Deadlift"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/lunge_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:fontFamily="sans-serif-condensed"
+                android:text="Lunge"
+                android:textAppearance="?android:textAppearanceMedium"
+                android:textStyle="bold" />
+        </RadioGroup>
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DEADLIFT"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="bold"
-            android:layout_marginTop="50dp"/>
-        <RadioButton
-            android:id="@+id/lunge_radio_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="LUNGE"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:fontFamily="sans-serif-condensed"
-            android:textStyle="bold"
-            android:layout_marginTop="50dp"/>
-    </RadioGroup>
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:layout_width="67dp"
+                android:layout_height="93dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/squat_pic" />
+
+            <ImageView
+                android:layout_width="68dp"
+                android:layout_height="85dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/deadlift_pic" />
+
+            <ImageView
+                android:layout_width="81dp"
+                android:layout_height="74dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/lunge_pic" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 
 
-    <Button
-        android:id="@+id/button"
+
+
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="BEGIN"
-        android:onClick="startSensorActivity"
-        android:layout_gravity="center"/>
+        android:text="\tAfter you hit begin, put the phone in your pocket and start squating when you hear the a beep"
+        android:layout_margin="20dp"
+        android:textSize="20dp"
+        android:textColor="#000000"
+        android:fontFamily="sans-serif-condensed"/>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal|bottom">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BEGIN"
+            android:onClick="startInit"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="#3F51B5"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="20dp"
+
+            />
+
+
+    </LinearLayout>
+
 
 </LinearLayout>
