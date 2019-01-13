@@ -9,6 +9,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 
@@ -21,6 +22,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float[] mGravity;
     float[] mGeomagnetic;
     private static final String TAG = "WL/MainActivity";
+
+    public String excerciseType = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +91,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
     public void begin(View view) {
+
+        RadioButton squatBtn = (RadioButton) findViewById(R.id.squat_radio_button);
+        RadioButton deadliftBtn = (RadioButton) findViewById(R.id.deadlift_radio_button);
+        RadioButton lungeBtn = (RadioButton) findViewById(R.id.lunge_radio_button);
+
+
+        if (squatBtn.isChecked()) {
+            excerciseType = "squat";
+        } else if (deadliftBtn.isChecked()) {
+            excerciseType = "deadlift";
+        } else {
+            excerciseType = "lunge";
+        }
+
+
+
         Intent intent = new Intent(this, SensorActivity.class);
+
+
+
+
+
         startActivity(intent);
     }
 
-    public void startSensorActivity(View view) {
-        Intent intent = new Intent(this, SensorActivity.class);
-        startActivity(intent);
-    }
+
 }
