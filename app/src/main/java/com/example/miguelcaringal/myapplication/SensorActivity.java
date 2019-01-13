@@ -29,6 +29,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     long timeOfLastMovt;
     float lastBigMovtDeg;
     long downMovtAvgTime, upMovtAvgTime;
+    long lastLogTime;
 
     private static final String INITIALIZATION_STATE = "INITIALIZATION_STATE";
     private static final String UP_STATE = "UP_STATE";
@@ -36,8 +37,9 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     private static final String END_STATE = "END_STATE";
     private static final String TAG = "WL/MainActivity";
     private static final long WAIT_TIME = 3000;
-    private static final long INITIALIZATION_TIME = 6000;
+    private static final long INITIALIZATION_TIME = 5000;
     private static final float DOWN_STATE_DEG = 30;
+    private static final long LOG_INTERVAL = 500;
     private static final float DEG_ERROR = 5;
     private static final long END_TIME_DETECT_THRESHOLD = 5000;
 
@@ -57,6 +59,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         mNumInitDegs = 0;
         mState = INITIALIZATION_STATE;
         mStateChangeTimeIntervals = new ArrayList<>();
+        lastLogTime = mCreationTime;
     }
 
     @Override
@@ -104,6 +107,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
                 float roll = (float) Math.toDegrees(orientation[2]);// orientation contains: azimut, pitch and roll
                 long deltaTime = nowTime-mCreationTime;
 
+
+
                 updateInitDegs(pitch, nowTime);
             }
         }
@@ -119,6 +124,11 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         float pitchDelta = Math.abs(pitch - mInitDegAvg);
         long creationDeltaTime = nowTime - mCreationTime;
 
+        if (nowTime - lastLogTime >= LOG_INTERVAL) {
+            lastLogTime = nowTime;
+            Log.d(TAG, "pitchDelta=" + pitchDelta);
+        }
+
         if (!mState.equals(INITIALIZATION_STATE)) {
             detectEndExercise(pitch, nowTime);
         }
@@ -127,9 +137,9 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
             downMovtAvgTime = getEvenIndexAvg(mStateChangeTimeIntervals);
             upMovtAvgTime = getOddIndexAvg(mStateChangeTimeIntervals);
-            Log.d(TAG, END_STATE);
-            Log.d(TAG, "downMovtAvgTime=" + downMovtAvgTime);
-            Log.d(TAG, "upMovtAvgTime=" + upMovtAvgTime);
+            //Log.d(TAG, END_STATE);
+            //Log.d(TAG, "downMovtAvgTime=" + downMovtAvgTime);
+           // Log.d(TAG, "upMovtAvgTime=" + upMovtAvgTime);
 
             return;
         }
@@ -138,7 +148,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             return;
         }
 
-        if (creationDeltaTime <= INITIALIZATION_TIME) {
+        if (creationDeltaTime <= INITIALIZATION_TIME + WAIT_TIME) {
             // Increment degs
             Log.d(TAG, "INIT: pitch=" + pitch);
             mInitDegsSum += pitch;
@@ -185,7 +195,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         if (Math.abs(pitch - lastBigMovtDeg) > DEG_ERROR) {
             timeOfLastMovt = nowTime;
             lastBigMovtDeg = pitch;
-            Log.d(TAG, "big movt");
+            //Log.d(TAG, "big movt");
         }
 
         if (nowTime - timeOfLastMovt >= END_TIME_DETECT_THRESHOLD) {
@@ -202,8 +212,12 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             count++;
         }
 
-        return Math.round(sum/count);
-    }
+        if (count == 0) {
+            return 0;
+        } else {
+            return Math.round(sum/count);
+        }
+     }
 
     long getOddIndexAvg(ArrayList<Long> arrayList) {
         int sum = 0;
@@ -214,7 +228,11 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             count++;
         }
 
-        return Math.round(sum/count);
+        if (count == 0) {
+            return 0;
+        } else {
+            return Math.round(sum/count);
+        }
     }
 
     private void playTone() {
