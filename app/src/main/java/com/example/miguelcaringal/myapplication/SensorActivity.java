@@ -59,7 +59,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
     private static final float DEG_ERROR = 5;
     private static final float DOWN_STATE_DEG = 50;
-    private static final float OVERSHOOT_DEG = 70;
+    private static final float OVERSHOOT_DEG = 80;
 
 
     //private static final float
@@ -103,6 +103,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
         timeData = new ArrayList<>();
         pitchData = new ArrayList<>();
+        mediaPlayerBuzzer = MediaPlayer.create(this, R.raw.buzzer);
+        mediaPlayerDing = MediaPlayer.create(this, R.raw.ding);
     }
 
     @Override
@@ -218,8 +220,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         if (creationDeltaTime <= WAIT_TIME) {
             return;
         }
-/*
-        if (pitchDelta > OVERSHOOT_DEG && !mState.equals(OVERSHOOT_STATE)) {
+
+        if (pitchDelta > OVERSHOOT_DEG && (mState.equals(DOWN_STATE) || mState.equals(UP_STATE)) ) {
             Log.d(TAG, "Overshoot");
 
             long stateChangeDeltaTime = nowTime - mLastStateChangeTime;
@@ -230,7 +232,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             mState = DOWN_STATE;
             mLastStateChangeTime = nowTime;
             return;
-        }*/
+        }
 
         if (creationDeltaTime <= INITIALIZATION_TIME + WAIT_TIME) {
             // Increment degs
@@ -341,13 +343,13 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
     private void playDing() {
         Log.d(TAG, "playDing");
-        mediaPlayerDing = MediaPlayer.create(this, R.raw.ding);
+
         mediaPlayerDing.start();
     }
 
     private void playBuzzer() {
         Log.d(TAG, "playBuzzer");
-        mediaPlayerBuzzer = MediaPlayer.create(this, R.raw.buzzer);
+
         mediaPlayerBuzzer.start();
     }
 }
