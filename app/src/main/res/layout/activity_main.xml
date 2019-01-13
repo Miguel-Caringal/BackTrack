@@ -38,26 +38,41 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <RadioButton
-            android:id="@+id/yes_radio_button"
+            android:id="@+id/squat_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/yes"
-            android:textAppearance="?android:textAppearanceMedium" />
+            android:text="SQUAT"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:fontFamily="sans-serif-condensed"
+            android:textStyle="bold"/>
         <RadioButton
-            android:id="@+id/no_radio_button"
+            android:id="@+id/deadlift_radio_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no"
-            android:textAppearance="?android:textAppearanceMedium" />
+            android:text="DEADLIFT"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:fontFamily="sans-serif-condensed"
+            android:textStyle="bold"
+            android:layout_marginTop="50dp"/>
+        <RadioButton
+            android:id="@+id/lunge_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LUNGE"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:fontFamily="sans-serif-condensed"
+            android:textStyle="bold"
+            android:layout_marginTop="50dp"/>
     </RadioGroup>
 
 
 
     <Button
         android:id="@+id/button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Temp"
-        android:onClick="startSensorActivity"/>
+        android:text="BEGIN"
+        android:onClick="startSensorActivity"
+        android:layout_gravity="center"/>
 
 </LinearLayout>
