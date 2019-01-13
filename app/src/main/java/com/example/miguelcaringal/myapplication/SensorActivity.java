@@ -69,8 +69,11 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mediaPlayer.stop();
-        mediaPlayer.release();
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+
     }
 
     @Override
