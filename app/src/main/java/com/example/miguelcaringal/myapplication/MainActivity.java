@@ -1,5 +1,7 @@
- package com.example.miguelcaringal.myapplication;
+package com.example.miguelcaringal.myapplication;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.app.Activity;
@@ -10,6 +12,7 @@ import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
@@ -29,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         }
+
+
+
     }
 
     @Override
@@ -100,5 +106,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             }
         }
+    }
+
+
+    /**
+     * will start the activity for the intitialization
+     * @param view the begin button
+     */
+    public void begin(View view) {
+
+        //Intent startInit = new Intent(this, sensorActivity.class);
+
+        //startActivity(startInit);
+        // TODO: OPEN WILLIES CODE
+
     }
 }
