@@ -7,10 +7,51 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+
+
+
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Squat Track"
+        android:textAllCaps="true"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="60dp"
+        android:textAlignment="center"
+        android:background="#3F51B5"/>
+
+    <TextView
+        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="Select your excercise:"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="#3F51B5"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:paddingLeft="20dp"/>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/yes_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/yes"
+            android:textAppearance="?android:textAppearanceMedium" />
+        <RadioButton
+            android:id="@+id/no_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no"
+            android:textAppearance="?android:textAppearanceMedium" />
+    </RadioGroup>
+
+
 
     <Button
         android:id="@+id/button"
