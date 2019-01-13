@@ -9,6 +9,8 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -47,6 +49,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     private static final long LOG_INTERVAL = 500;
     private static final float DEG_ERROR = 5;
     private static final long END_TIME_DETECT_THRESHOLD = 5000;
+    public String exerciseType = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +68,20 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         mState = INITIALIZATION_STATE;
         mStateChangeTimeIntervals = new ArrayList<>();
         lastLogTime = mCreationTime;
+
+        Bundle bundle = getIntent().getExtras();
+
+        if(bundle.getString("exercise")!= null)
+        {
+            //TODO here get the string stored in the string variable and do
+
+            exerciseType = bundle.getString("exercise");
+
+            TextView display = findViewById(R.id.display);
+
+            display.setText(exerciseType.toUpperCase() + "!");
+
+        }
     }
 
     @Override
@@ -150,7 +167,12 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
             downMovtAvgTime = getEvenIndexAvg(mStateChangeTimeIntervals);
             upMovtAvgTime = getOddIndexAvg(mStateChangeTimeIntervals);
+
+
+
             Intent intent = new Intent(this, Review.class);
+
+            intent.putExtra("exercise", exerciseType);
             startActivity(intent);
             //Log.d(TAG, END_STATE);
             //Log.d(TAG, "downMovtAvgTime=" + downMovtAvgTime);
