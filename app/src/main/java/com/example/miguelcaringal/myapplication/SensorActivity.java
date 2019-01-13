@@ -107,20 +107,29 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         float pitchDelta = Math.abs(pitch - mInitDegAvg);
         long creationDeltaTime = nowTime - mCreationTime;
 
-        if (creationDeltaTime > WAIT_TIME && creationDeltaTime <= INITIALIZATION_TIME) {
+        if (creationDeltaTime <= WAIT_TIME) {
+            return;
+        }
+        if (creationDeltaTime <= INITIALIZATION_TIME) {
             // Increment degs
+            Log.d(TAG, "INIT: pitch=" + pitch);
             mInitDegsSum += pitch;
             mNumInitDegs++;
         } else if (mState.equals(INITIALIZATION_STATE)){
-            Log.d(TAG, "INITIALIZATION_STATE");
+
 
             // Calculate avgs
             mInitDegAvg = mInitDegsSum / mNumInitDegs;
             playTone();
             mState = UP_STATE;
             mLastStateChangeTime = nowTime;
+
+            Log.d(TAG, "INITIALIZATION_STATE");
+            Log.d(TAG, "mInitDegAvg" + mInitDegAvg);
         } else if (mState.equals(UP_STATE) && pitchDelta > DOWN_STATE_DEG) {
             Log.d(TAG, "CHANGE TO DOWN STATE");
+            Log.d(TAG, "pitch=" + pitch + " pitchDelta=" + pitchDelta);
+
             long stateChangeDeltaTime = nowTime - mLastStateChangeTime;
             mStateChangeTimeIntervals.add(stateChangeDeltaTime);
             playTone();
@@ -128,6 +137,7 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             mLastStateChangeTime = nowTime;
         } else if (mState.equals(DOWN_STATE) && pitchDelta < DEG_ERROR) {
             Log.d(TAG, "CHANGE TO UP STATE");
+            Log.d(TAG, "pitch=" + pitch + " pitchDelta=" + pitchDelta);
             playTone();
             long stateChangeDeltaTime = nowTime - mLastStateChangeTime;
             mStateChangeTimeIntervals.add(stateChangeDeltaTime);
