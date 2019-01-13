@@ -1,5 +1,6 @@
 package com.example.miguelcaringal.myapplication;
 
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -8,6 +9,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -34,6 +36,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     float lastBigMovtDeg;
     long downMovtAvgTime, upMovtAvgTime;
     long lastLogTime;
+    ArrayList<Integer> timeData;
+    ArrayList<Float> pitchData;
 
     private static final String INITIALIZATION_STATE = "INITIALIZATION_STATE";
     private static final String UP_STATE = "UP_STATE";
@@ -46,6 +50,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
     private static final long LOG_INTERVAL = 500;
     private static final float DEG_ERROR = 5;
     private static final long END_TIME_DETECT_THRESHOLD = 5000;
+    private static final String PITCH_DATA_KEY = "PITCH_DATA_KEY";
+    private static final String TIME_DATA_KEY = "TIME_DATA_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
         mState = INITIALIZATION_STATE;
         mStateChangeTimeIntervals = new ArrayList<>();
         lastLogTime = mCreationTime;
+        timeData = new ArrayList<>();
+        pitchData = new ArrayList<>();
     }
 
     @Override
@@ -133,6 +141,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
         if (nowTime - lastLogTime >= LOG_INTERVAL) {
             lastLogTime = nowTime;
+            timeData.add((int) creationDeltaTime);
+            pitchData.add(pitchDelta);
 
             if (mState.equals(END_STATE)) {
                 Log.d(TAG, "END_STATE");
@@ -149,6 +159,10 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
             downMovtAvgTime = getEvenIndexAvg(mStateChangeTimeIntervals);
             upMovtAvgTime = getOddIndexAvg(mStateChangeTimeIntervals);
+            Intent intent = new Intent(this, ReviewActivity.class);
+            intent.putExtra(PITCH_DATA_KEY, convertFloats(pitchData));
+            intent.putExtra(TIME_DATA_KEY, convertIntegers(timeData));
+            startActivity(intent);
             //Log.d(TAG, END_STATE);
             //Log.d(TAG, "downMovtAvgTime=" + downMovtAvgTime);
            // Log.d(TAG, "upMovtAvgTime=" + upMovtAvgTime);
@@ -201,6 +215,26 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
             mLastStateChangeTime = nowTime;
 
         }
+    }
+
+    public int[] convertIntegers(ArrayList<Integer> integers)
+    {
+        int[] ret = new int[integers.size()];
+        for (int i=0; i < ret.length; i++)
+        {
+            ret[i] = integers.get(i);
+        }
+        return ret;
+    }
+
+    public float[] convertFloats(ArrayList<Float> floats)
+    {
+        float[] ret = new float[floats.size()];
+        for (int i=0; i < ret.length; i++)
+        {
+            ret[i] = floats.get(i);
+        }
+        return ret;
     }
 
     void detectEndExercise(float pitch, long nowTime) {
