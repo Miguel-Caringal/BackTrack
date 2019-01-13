@@ -129,7 +129,12 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
         if (nowTime - lastLogTime >= LOG_INTERVAL) {
             lastLogTime = nowTime;
-            Log.d(TAG, "pitchDelta=" + pitchDelta);
+
+            if (mState.equals(END_STATE)) {
+                Log.d(TAG, "END_STATE");
+            } else {
+                Log.d(TAG, "pitchDelta=" + pitchDelta);
+            }
         }
 
         if (!mState.equals(INITIALIZATION_STATE)) {
