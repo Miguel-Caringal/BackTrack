@@ -3,16 +3,15 @@ package com.example.miguelcaringal.myapplication;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.TextView;
+
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -24,6 +23,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     float[] mGeomagnetic;
     private static final String TAG = "WL/MainActivity";
 
+    public String excerciseType = "";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         }
+
+
+
     }
 
     @Override
@@ -84,8 +89,32 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    public void startSensorActivity(View view) {
+
+    public void begin(View view) {
+
+        RadioButton squatBtn = (RadioButton) findViewById(R.id.squat_radio_button);
+        RadioButton deadliftBtn = (RadioButton) findViewById(R.id.deadlift_radio_button);
+        RadioButton lungeBtn = (RadioButton) findViewById(R.id.lunge_radio_button);
+
+
+        if (squatBtn.isChecked()) {
+            excerciseType = "squat";
+        } else if (deadliftBtn.isChecked()) {
+            excerciseType = "deadlift";
+        } else {
+            excerciseType = "lunge";
+        }
+
+
+
         Intent intent = new Intent(this, SensorActivity.class);
+
+
+
+
+
         startActivity(intent);
     }
+
+
 }
