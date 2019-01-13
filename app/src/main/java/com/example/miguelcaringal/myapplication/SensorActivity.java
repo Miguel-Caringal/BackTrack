@@ -1,5 +1,6 @@
 package com.example.miguelcaringal.myapplication;
 
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -145,6 +146,8 @@ public class SensorActivity extends AppCompatActivity implements SensorEventList
 
             downMovtAvgTime = getEvenIndexAvg(mStateChangeTimeIntervals);
             upMovtAvgTime = getOddIndexAvg(mStateChangeTimeIntervals);
+            Intent intent = new Intent(this, SensorActivity.class);
+            startActivity(intent);
             //Log.d(TAG, END_STATE);
             //Log.d(TAG, "downMovtAvgTime=" + downMovtAvgTime);
            // Log.d(TAG, "upMovtAvgTime=" + upMovtAvgTime);
