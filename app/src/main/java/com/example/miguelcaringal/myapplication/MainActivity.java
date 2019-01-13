@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         Intent intent = new Intent(this, SensorActivity.class);
 
-
+        intent.putExtra("excercise", excerciseType);
 
 
 
